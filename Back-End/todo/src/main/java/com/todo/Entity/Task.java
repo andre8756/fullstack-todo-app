@@ -9,6 +9,12 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @Column
+    private String description;
+
+    // CheckBox
+    @Column
+    private boolean completed;
 
 }
