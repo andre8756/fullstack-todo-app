@@ -21,6 +21,6 @@ public class Task {
 
     // CheckBox
     @Column
-    private boolean completed;
+    private Boolean completed;
 
 }
