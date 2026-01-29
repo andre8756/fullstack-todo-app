@@ -34,6 +34,21 @@ public class TaskService {
         return TaskMapper.toDTO(updateTask);
     }
 
-    
+    public void delete(Long id){
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task não encontrada."));
+
+        taskRepository.delete(task);
+    }
+
+    public TaskResponseDTO findById(Long id){
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task não encontrada"));
+
+        return TaskMapper.toDTO(task);
+
+    }
 
 }
