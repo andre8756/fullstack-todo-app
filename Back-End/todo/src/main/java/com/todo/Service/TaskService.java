@@ -7,6 +7,7 @@ import com.todo.Mapper.TaskMapper;
 import com.todo.Repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class TaskService {
@@ -20,5 +21,19 @@ public class TaskService {
 
         return TaskMapper.toDTO(savedTask);
     }
+
+    public TaskResponseDTO update(Long id, TaskResponseDTO dto){
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task não encontrada."));
+
+        task.setDescription(dto.description());
+        task.setCompleted(dto.completed());
+
+        Task updateTask = taskRepository.save(task);
+        return TaskMapper.toDTO(updateTask);
+    }
+
+    
 
 }
