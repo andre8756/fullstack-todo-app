@@ -1,46 +1,41 @@
-package com.todo.Entity;
+package com.todo.Service;
 
-import com.todo.Enum.Role;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import com.todo.Repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 
-@Entity
-@Table(name = "tb_users")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class User implements UserDetails {
+@Service
+public class UserDatailsServiceImpl implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Autowired
+    UserRepository userRepository;
 
-    @Column(unique = true)
-    private String login;
-
-    @Column
-    private String password;
-
-    @Column
-    private Role role;
+    public UserDetails LoadUserByUsername(String login) throws UsernameNotFoundException{
+        return userRepository.findByLogin(login);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
+        return List.of();
+    }
+
+    @Override
+    public @Nullable String getPassword() {
+        return "";
     }
 
     @Override
     public String getUsername() {
-        return login;
+        return "";
     }
 
     @Override
