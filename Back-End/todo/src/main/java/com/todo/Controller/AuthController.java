@@ -1,11 +1,15 @@
 package com.todo.Controller;
 
 import com.todo.Dto.AuthenticationDto;
+import com.todo.Dto.RegisterDto;
+import com.todo.Entity.User;
+import com.todo.Repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +22,10 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("login")
+    @Autowired
+    private UserRepository userRepository
+
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDto data){
 
         var userNamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
@@ -27,5 +34,16 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody @Valid RegisterDto data){
+        if(this.userRepository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+
+        String encriptedPassword = new BCryptPasswordEncoder().encode(data.password());
+
+        User user = new User(data.login(), encriptedPassword, data.role());
+        this.userRepository.save(user);
+
+        return ResponseEntity.ok().build();
+    }
 
 }
